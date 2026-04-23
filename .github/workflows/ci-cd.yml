@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-test-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +17,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+          cache: maven
+
+      - name: Dar permisos al wrapper de Maven
+        run: chmod +x demo-deploy/mvnw
 
       - name: Construir aplicación
-        run: mvn package -DskipTests
+        run: cd demo-deploy && ./mvnw clean package -DskipTests
 
       - name: Desplegar en Render
         run: curl "$RENDER_DEPLOY_HOOK"
